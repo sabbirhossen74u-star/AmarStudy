@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#1d4ed8" />
+  <title>আমার স্টাডি অ্যাপ</title>
+  <style>
+    :root {
+      --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --muted: #64748b;
+      --primary: #1d4ed8; --primary-light: #dbeafe; --success: #16a34a; --success-light: #dcfce7;
+      --danger: #dc2626; --danger-light: #fee2e2; --border: #e2e8f0;
+    }
+    body.dark {
+      --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8;
+      --primary: #3b82f6; --primary-light: #1e3a8a; --success-light: #14532d;
+      --danger-light: #7f1d1d; --border: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 82px; }
+
+    .bismillah-bar {
+      background: linear-gradient(90deg, #0f172a, #1e293b); color: #fde68a;
+      text-align: center; padding: 8px 12px; font-size: 12px; border-bottom: 1px solid #334155;
+    }
+    .bismillah-ar { font-size: 16px; font-weight: 700; display: block; }
+
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #2563eb); color: #fff; padding: 12px 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 20; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    header h1 { font-size: 17px; font-weight: 700; }
+    .icon-btn {
+      background: rgba(255,255,255,0.2); border: none; color: #fff;
+      padding: 6px 10px; border-radius: 8px; font-size: 13px; cursor: pointer;
+    }
+
+    .notice-card {
+      background: linear-gradient(135deg, #fef2f2, #fff7ed);
+      border: 1px solid #fecaca; border-left: 5px solid #dc2626;
+      color: #7f1d1d; border-radius: 12px; padding: 12px; margin-bottom: 12px;
+      font-size: 13px; line-height: 1.55;
+    }
+    body.dark .notice-card { background: #2d1619; border-color: #7f1d1d; color: #fecaca; }
+    .notice-card strong { display: block; font-size: 14px; margin-bottom: 4px; color: #b91c1c; }
+    body.dark .notice-card strong { color: #fca5a5; }
+
+    .success-banner {
+      background: linear-gradient(135deg, #15803d, #16a34a); color: #ffffff;
+      text-align: center; padding: 15px 12px; border-radius: 14px;
+      font-size: 17px; font-weight: 800; box-shadow: 0 4px 10px rgba(22,163,74,0.25); margin-top: 6px;
+    }
+
+    .container { max-width: 600px; margin: 0 auto; padding: 12px; }
+    .tab-page { display: none; }
+    .tab-page.active { display: block; }
+
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px; margin-bottom: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+    .card-title { font-size: 15px; font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+
+    label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 3px; font-weight: 600; }
+    input, textarea, select {
+      width: 100%; padding: 9px 10px; margin-bottom: 8px;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--bg); color: var(--text); font-size: 14px;
+    }
+    .row { display: flex; gap: 8px; align-items: center; }
+    .row > * { flex: 1; }
+    .btn {
+      background: var(--primary); color: #fff; border: none;
+      padding: 10px 14px; border-radius: 8px; font-size: 14px; font-weight: 600;
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .btn-sm { padding: 6px 10px; font-size: 12px; }
+    .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+    .btn-success { background: var(--success); }
+    .btn-danger { background: var(--danger); }
+
+    .progress-wrap { background: var(--border); height: 10px; border-radius: 99px; overflow: hidden; margin: 8px 0; }
+    .progress-bar { background: var(--success); height: 100%; width: 0%; transition: width 0.3s; }
+
+    .routine-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .routine-item:last-child { border-bottom: none; }
+    .routine-item input[type="checkbox"] { width: 22px; height: 22px; margin: 0; accent-color: var(--success); flex-shrink: 0; }
+    .routine-info { flex: 1; min-width: 0; }
+    .routine-info.done .r-title { text-decoration: line-through; color: var(--muted); }
+    .r-title { font-size: 14px; font-weight: 600; word-break: break-word; }
+    .r-time { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .badge { display: inline-block; background: var(--primary-light); color: var(--primary); padding: 2px 7px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+
+    .sub-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+    .sub-tab { flex: 1; padding: 9px 4px; text-align: center; border-radius: 9px; background: var(--border); font-weight: 600; cursor: pointer; font-size: 12px; }
+    .sub-tab.active { background: var(--primary); color: #fff; }
+
+    .avg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; text-align: center; }
+    .avg-box { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 6px; }
+    .avg-box strong { display: block; font-size: 17px; color: var(--primary); }
+    .avg-box span { font-size: 11px; color: var(--muted); }
+
+    .quiz-timer-bar {
+      background: var(--primary-light); color: var(--primary); padding: 8px 12px;
+      border-radius: 10px; font-weight: 700; display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 12px; position: sticky; top: 54px; z-index: 10;
+    }
+    .quiz-q { padding: 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; background: var(--bg); }
+    .quiz-q-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+    .quiz-opt {
+      display: block; width: 100%; text-align: left; padding: 9px 10px; margin-bottom: 6px;
+      border: 1px solid var(--border); border-radius: 8px; background: var(--card);
+      color: var(--text); font-size: 13px; cursor: pointer;
+    }
+    .quiz-opt.selected { border-color: var(--primary); background: var(--primary-light); font-weight: 700; }
+    .quiz-opt.correct { border-color: var(--success); background: var(--success-light); font-weight: 700; }
+    .quiz-opt.wrong { border-color: var(--danger); background: var(--danger-light); }
+
+    .timer-display { font-size: 54px; font-weight: 800; text-align: center; margin: 14px 0; font-variant-numeric: tabular-nums; color: var(--primary); }
+    .preset-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    body.focus-fullscreen .bismillah-bar, body.focus-fullscreen header, body.focus-fullscreen nav { display: none !important; }
+    body.focus-fullscreen { padding: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #0f172a; color: #fff; }
+    body.focus-fullscreen .container { width: 100%; }
+    body.focus-fullscreen .card { background: #1e293b; border-color: #334155; color: #fff; }
+
+    .chapter-btn {
+      width: 100%; text-align: left; padding: 11px 12px; margin-bottom: 8px;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+      color: var(--text); font-weight: 600; cursor: pointer; font-size: 14px;
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    }
+    .book-content { line-height: 1.75; font-size: 15px; }
+    .book-content h3 { color: var(--primary); margin-bottom: 10px; font-size: 17px; }
+    .book-content h4 { margin: 12px 0 5px; font-size: 15px; color: var(--success); }
+    .book-content p { margin-bottom: 8px; }
+    .book-content ul { padding-left: 18px; margin-bottom: 10px; }
+    .book-content li { margin-bottom: 5px; }
+    #pdfCanvas { width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; margin-top: 8px; background: #fff; }
+
+    .flashcard {
+      background: var(--primary-light); border: 2px solid var(--primary);
+      border-radius: 12px; padding: 18px; text-align: center; cursor: pointer;
+      margin-bottom: 10px; position: relative;
+    }
+    .flashcard small { display: block; color: var(--muted); margin-top: 6px; font-size: 11px; }
+
+    nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--card); border-top: 1px solid var(--border);
+      display: flex; justify-content: space-around; padding: 7px 2px; z-index: 20;
+    }
+    .nav-btn {
+      background: none; border: none; color: var(--muted);
+      display: flex; flex-direction: column; align-items: center;
+      font-size: 11px; font-weight: 600; cursor: pointer; gap: 2px; flex: 1;
+    }
+    .nav-btn span.ico { font-size: 19px; }
+    .nav-btn.active { color: var(--primary); }
+  </style>
+</head>
+<body>
+
+<div class="bismillah-bar">
+  <span class="bismillah-ar">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>
+  <span>বিসমিল্লাহির রাহমানির রাহিম</span>
+</div>
+
+<header>
+  <h1>📚 আমার স্টাডি অ্যাপ</h1>
+  <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙 ডার্ক</button>
+</header>
+
+<div class="container">
+
+  <!-- TAB 1: DAILY & WEEKLY ROUTINE -->
+  <div id="tab-routine" class="tab-page active">
+
+    <div class="notice-card">
+      <strong>📵 মোবাইল আসক্তি কমানোর জরুরি নোটিশ</strong>
+      কোর্সের পড়া ও জরুরি ক্লাস ছাড়া অযথা সোশ্যাল মিডিয়া (ফেসবুক, ইউটিউব, রিলস, গেম) ব্যবহার করবে না! পড়ার সময় ফোন দূরে রাখো বা অফলাইনে পড়াশোনা করো। সময়ের অপচয় নয়, লক্ষ্য হোক সাফল্য!
+    </div>
+
+    <div class="sub-tabs">
+      <div class="sub-tab active" id="subDailyBtn" onclick="switchRoutineSub('daily')">🌅 প্রতিদিনের রুটিন (সকাল-রাত)</div>
+      <div class="sub-tab" id="subWeeklyBtn" onclick="switchRoutineSub('weekly')">📆 সাপ্তাহিক রুটিন</div>
+    </div>
+
+    <!-- DAILY ROUTINE -->
+    <div id="dailyRoutineBox">
+      <div class="card">
+        <div class="card-title">
+          <span>🌅 সকাল থেকে রাতের রুটিন</span>
+          <button class="btn btn-sm btn-outline" onclick="resetDailyChecks()">রিসেট টিক</button>
+        </div>
+        <div style="font-size: 13px; color: var(--muted);" id="dailyProgressText">0/0 সম্পন্ন</div>
+        <div class="progress-wrap"><div class="progress-bar" id="dailyProgressBar"></div></div>
+        <div id="dailyRoutineList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>➕ প্রতিদিনের নতুন কাজ যোগ করুন</span></div>
+        <div class="row">
+          <div><label>শুরুর সময়</label><input type="time" id="dStart" value="06:00" /></div>
+          <div><label>শেষের সময়</label><input type="time" id="dEnd" value="07:30" /></div>
+        </div>
+        <label>কী পড়বেন বা করবেন?</label>
+        <input type="text" id="dTitle" placeholder="যেমন: সকালের পড়া / রিভিশন / ঘুমের সময়" />
+        <button class="btn" onclick="addDailyRoutine()" style="width:100%;">প্রতিদিনের রুটিনে সেট করুন</button>
+      </div>
+    </div>
+
+    <!-- WEEKLY ROUTINE -->
+    <div id="weeklyRoutineBox" style="display:none;">
+      <div class="card">
+        <div class="card-title">
+          <span>📆 সাপ্তাহিক রুটিন (আজ: <span id="todayName"></span>)</span>
+          <button class="btn btn-sm btn-outline" onclick="resetWeeklyChecks()">রিসেট টিক</button>
+        </div>
+        <select id="weeklyFilter" onchange="renderWeeklyRoutines()" style="margin-bottom:8px;">
+          <option value="all">সপ্তাহের সব দিন দেখুন</option>
+          <option value="today">শুধু আজকের বার দেখুন</option>
+        </select>
+        <div style="font-size: 13px; color: var(--muted);" id="weeklyProgressText">0/0 সম্পন্ন</div>
+        <div class="progress-wrap"><div class="progress-bar" id="weeklyProgressBar"></div></div>
+        <div id="weeklyRoutineList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>➕ সাপ্তাহিক রুটিন সেট করুন</span></div>
+        <div class="row">
+          <div>
+            <label>বার নির্বাচন করুন</label>
+            <select id="wDay">
+              <option value="শনিবার">শনিবার</option>
+              <option value="রবিবার">রবিবার</option>
+              <option value="সোমবার">সোমবার</option>
+              <option value="মঙ্গলবার">মঙ্গলবার</option>
+              <option value="বুধবার">বুধবার</option>
+              <option value="বৃহস্পতিবার">বৃহস্পতিবার</option>
+              <option value="শুক্রবার">শুক্রবার</option>
+            </select>
+          </div>
+          <div>
+            <label>সময়</label>
+            <input type="time" id="wTime" value="19:00" />
+          </div>
+        </div>
+        <label>বিষয় বা সাপ্তাহিক কাজ</label>
+        <input type="text" id="wTitle" placeholder="যেমন: বাংলা ও আরবি রিভিশন / সাপ্তাহিক পরীক্ষা" />
+        <button class="btn" onclick="addWeeklyRoutine()" style="width:100%;">সাপ্তাহিক রুটিনে যোগ করুন</button>
+      </div>
+    </div>
+
+    <div class="success-banner">
+      🌟 আমি সফল হবই, ইনশাআল্লাহ! 🌟
+    </div>
+
+  </div>
+
+  <!-- TAB 2: FOCUS TIMER -->
+  <div id="tab-focus" class="tab-page">
+    <div class="card" style="text-align:center;">
+      <div class="card-title" style="justify-content:center;">⏱️ ফোকাস মোড ও টাইমার</div>
+      <div class="preset-row">
+        <button class="btn btn-sm btn-outline" onclick="setTimer(25)">২৫ মিনিট</button>
+        <button class="btn btn-sm btn-outline" onclick="setTimer(50)">৫০ মিনিট</button>
+        <button class="btn btn-sm btn-outline" onclick="setTimer(5)">৫ মিনিট বিরতি</button>
+      </div>
+      <div class="row" style="max-width:240px; margin:0 auto 8px;">
+        <input type="number" id="customMins" placeholder="মিনিট লিখুন" min="1" max="180" style="margin:0;" />
+        <button class="btn btn-sm" onclick="setCustomTimer()">সেট</button>
+      </div>
+      <div class="timer-display" id="timerDisplay">25:00</div>
+      <div class="preset-row">
+        <button class="btn btn-success" onclick="startTimer()">▶ শুরু করুন</button>
+        <button class="btn btn-outline" onclick="pauseTimer()">⏸ বিরতি</button>
+        <button class="btn btn-danger" onclick="resetTimer()">↺ রিসেট</button>
+      </div>
+      <div class="preset-row" style="margin-top:10px;">
+        <button class="btn btn-sm btn-outline" onclick="toggleFullscreenFocus()" id="fsBtn">🖥 ফুলস্ক্রিন ফোকাস</button>
+        <button class="btn btn-sm btn-outline" onclick="testAlarm()">🔔 অ্যালার্ম টেস্ট</button>
+      </div>
+      <p style="font-size:13px; color:var(--muted); margin-top:12px;">
+        আজ মোট পড়েছেন: <strong id="todayStudyMins">0</strong> মিনিট
+      </p>
+    </div>
+  </div>
+
+  <!-- TAB 3: EXAM (TAKE EXAM + CREATE QUESTIONS + AVERAGE & ARRANGE) -->
+  <div id="tab-exam" class="tab-page">
+    <div class="sub-tabs">
+      <div class="sub-tab active" id="exSubTake" onclick="switchExamMode('take')">📝 পরীক্ষা দিন</div>
+      <div class="sub-tab" id="exSubMake" onclick="switchExamMode('make')">➕ প্রশ্ন বানান</div>
+      <div class="sub-tab" id="exSubAvg" onclick="switchExamMode('avg')">📊 অ্যাভারেজ</div>
+    </div>
+
+    <div id="examTakePanel">
+      <div class="card" id="quizSetupCard">
+        <div class="card-title"><span>📝 নিজে নিজে পরীক্ষা দিন</span></div>
+        <label>কোন বিষয়ের পরীক্ষা দেবেন?</label>
+        <select id="quizSubjectSelect"></select>
+        <label>পরীক্ষার সময় (মিনিট)</label>
+        <input type="number" id="quizMinutes" value="5" min="1" max="120" />
+        <button class="btn btn-success" onclick="startQuiz()" style="width:100%;">▶ পরীক্ষা শুরু করুন</button>
+        <small style="color:var(--muted); display:block; margin-top:8px;">
+          💡 পরীক্ষা জমা দিলে ফলাফল অটোমেটিক আপনার "অ্যাভারেজ" হিসাবে সেভ হবে এবং ভুল উত্তর সংশোধন দেখাবে।
+        </small>
+      </div>
+
+      <div class="card" id="quizRunCard" style="display:none;">
+        <div class="quiz-timer-bar">
+          <span id="quizHeaderSub">পরীক্ষা চলছে</span>
+          <span id="quizClock">⏱️ 05:00</span>
+        </div>
+        <div id="quizBody"></div>
+        <div class="row" style="margin-top:10px;">
+          <button class="btn btn-success" onclick="submitQuiz(false)">✅ পরীক্ষা জমা দিন</button>
+          <button class="btn btn-outline" onclick="cancelQuiz()">বাতিল</button>
+        </div>
+      </div>
+
+      <div class="card" id="quizResultCard" style="display:none;">
+        <div class="card-title"><span>🏆 পরীক্ষার ফলাফল</span></div>
+        <div class="avg-grid" id="quizResultSummary"></div>
+        <div id="quizReviewList"></div>
+        <button class="btn" onclick="resetQuizUI()" style="width:100%; margin-top:10px;">আবার পরীক্ষা দিন</button>
+      </div>
+    </div>
+
+    <div id="examMakePanel" style="display:none;">
+      <div class="card">
+        <div class="card-title"><span>➕ নিজে নিজে প্রশ্ন বানান (MCQ)</span></div>
+        <label>বিষয়ের নাম</label>
+        <input type="text" id="qSub" placeholder="যেমন: আলিম আরবি, বাংলা, ইংরেজি, গণিত" />
+        <label>প্রশ্ন লিখুন</label>
+        <textarea id="qText" rows="2" placeholder="আপনার প্রশ্নটি এখানে লিখুন..."></textarea>
+        <div class="row">
+          <div><label>অপশন ক</label><input type="text" id="qA" placeholder="অপশন ক" /></div>
+          <div><label>অপশন খ</label><input type="text" id="qB" placeholder="অপশন খ" /></div>
+        </div>
+        <div class="row">
+          <div><label>অপশন গ</label><input type="text" id="qC" placeholder="অপশন গ" /></div>
+          <div><label>অপশন ঘ</label><input type="text" id="qD" placeholder="অপশন ঘ" /></div>
+        </div>
+        <label>সঠিক উত্তর কোনটি?</label>
+        <select id="qAns">
+          <option value="A">ক (অপশন ক)</option>
+          <option value="B">খ (অপশন খ)</option>
+          <option value="C">গ (অপশন গ)</option>
+          <option value="D">ঘ (অপশন ঘ)</option>
+        </select>
+        <button class="btn" onclick="addQuestion()" style="width:100%;">প্রশ্ন সেভ করুন</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>📚 আমার তৈরি করা প্রশ্নসমূহ (<span id="qCount">0</span>)</span></div>
+        <div id="questionBankList"></div>
+      </div>
+    </div>
+
+    <div id="examAvgPanel" style="display:none;">
+      <div class="card">
+        <div class="card-title">
+          <span>📊 পরীক্ষার অ্যাভারেজ (গড় ফলাফল)</span>
+          <button class="btn btn-sm btn-outline" onclick="clearScores()">সব মুছুন</button>
+        </div>
+        <div class="avg-grid">
+          <div class="avg-box"><strong id="avgTotal">0/0</strong><span>মোট নম্বর</span></div>
+          <div class="avg-box"><strong id="avgMean">0</strong><span>গড় নম্বর</span></div>
+          <div class="avg-box"><strong id="avgPercent">0%</strong><span>গড় শতকরা (%)</span></div>
+        </div>
+        <label>অন্যান্য পরীক্ষার নম্বর যোগ করুন</label>
+        <input type="text" id="scoreSub" placeholder="বিষয় / পরীক্ষার নাম" />
+        <div class="row">
+          <div><label>প্রাপ্ত নম্বর</label><input type="number" id="scoreObt" placeholder="যেমন: 82" min="0" /></div>
+          <div><label>পূর্ণমান (মোট)</label><input type="number" id="scoreFull" value="100" min="1" /></div>
+        </div>
+        <button class="btn" onclick="addScore()" style="width:100%;">নম্বর যোগ করুন</button>
+        <div id="scoreList" style="margin-top:10px;"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>📅 আসন্ন পরীক্ষার সময়সূচি (Arrange)</span></div>
+        <input type="text" id="examSubName" placeholder="পরীক্ষা ও বিষয়ের নাম (যেমন: আলিম - কুরআন মাজীদ)" />
+        <div class="row">
+          <div><label>তারিখ</label><input type="date" id="examSubDate" /></div>
+          <div><label>সময়</label><input type="time" id="examSubTime" value="10:00" /></div>
+        </div>
+        <button class="btn" onclick="addExamItem()" style="width:100%;">পরীক্ষা সাজান</button>
+        <div id="examArrangeList" style="margin-top:10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: READ BOOK & PDF -->
+  <div id="tab-book" class="tab-page">
+    <div class="sub-tabs">
+      <div class="sub-tab active" id="subBookBtn" onclick="switchBookMode('builtin')">📖 পড়ার বই ও আলিম A+</div>
+      <div class="sub-tab" id="subPdfBtn" onclick="switchBookMode('pdf')">📄 মূল PDF পড়ুন</div>
+    </div>
+
+    <div id="bookBuiltin">
+      <div class="card" id="chapterListCard">
+        <div class="card-title" style="flex-direction:column; align-items:flex-start; gap:2px;">
+          <span>📚 পড়ালেখায় ভালো হওয়ার কৌশল ও আলিম A+ গাইড</span>
+          <small style="color:var(--muted); font-weight:400;">জাবেদ মুহাম্মাদ | আলিম A+ প্রস্তুতি, পড়ার নিয়ম ও খাদ্যাভ্যাসসহ</small>
+        </div>
+        <div id="chapterList"></div>
+      </div>
+
+      <div class="card" id="chapterReaderCard" style="display:none;">
+        <div class="card-title">
+          <button class="btn btn-sm btn-outline" onclick="closeChapter()">⬅ সূচিপত্র</button>
+          <div>
+            <button class="btn btn-sm btn-outline" onclick="changeFontSize(-1)">A-</button>
+            <button class="btn btn-sm btn-outline" onclick="changeFontSize(1)">A+</button>
+          </div>
+        </div>
+        <div class="book-content" id="chapterBody"></div>
+        <div style="margin-top:14px; display:flex; justify-content:space-between; gap:8px;">
+          <button class="btn btn-sm btn-success" id="markReadBtn" onclick="toggleChapterRead()">✓ পড়া সম্পন্ন</button>
+          <button class="btn btn-sm" id="nextChapBtn" onclick="nextChapter()">পরের অধ্যায় ▶</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="bookPdf" style="display:none;">
+      <div class="card">
+        <div class="card-title"><span>📂 ফোনের PDF যুক্ত করুন</span></div>
+        <input type="file" id="pdfInput" accept="application/pdf" onchange="handlePdfUpload(event)" />
+        <small style="color:var(--muted);">তোমার ফোনে থাকা PDF ফাইলটি এখান থেকে সিলেক্ট করে সেভ রাখতে পারবে।</small>
+        <div id="savedPdfList" style="margin-top:12px;"></div>
+      </div>
+
+      <div class="card" id="pdfViewerCard" style="display:none;">
+        <div class="card-title">
+          <span id="pdfTitle" style="font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:65%;">PDF</span>
+          <button class="btn btn-sm btn-danger" onclick="closePdfViewer()">বন্ধ</button>
+        </div>
+        <div class="row" style="justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <button class="btn btn-sm" onclick="prevPdfPage()">◀ আগের পৃষ্ঠা</button>
+          <span id="pdfPageInfo" style="font-size:13px; font-weight:600; text-align:center;">পৃষ্ঠা 1</span>
+          <button class="btn btn-sm" onclick="nextPdfPage()">পরের পৃষ্ঠা ▶</button>
+        </div>
+        <div id="pdfStatus" style="font-size:13px; color:var(--muted); text-align:center;"></div>
+        <canvas id="pdfCanvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 5: NOTES & FLASHCARDS -->
+  <div id="tab-notes" class="tab-page">
+    <div class="card">
+      <div class="card-title"><span>📝 দ্রুত নোট / সূত্র সেভ করুন</span></div>
+      <input type="text" id="noteTitle" placeholder="বিষয় বা শিরোনাম" />
+      <textarea id="noteBody" rows="3" placeholder="গুরুত্বপূর্ণ নোট বা সূত্র লিখুন..."></textarea>
+      <button class="btn" onclick="addNote()">সেভ করুন</button>
+      <div id="notesList" style="margin-top:12px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>🃏 ফ্ল্যাশকার্ড (মনে রাখার প্র্যাকটিস)</span></div>
+      <input type="text" id="fcFront" placeholder="প্রশ্ন বা ইংরেজি শব্দ (সামনে)" />
+      <input type="text" id="fcBack" placeholder="উত্তর বা বাংলা অর্থ (পিছনে)" />
+      <button class="btn" onclick="addFlashcard()">কার্ড যোগ করুন</button>
+      <div id="flashcardList" style="margin-top:12px;"></div>
+    </div>
+  </div>
+
+</div>
+
+<nav>
+  <button class="nav-btn active" onclick="switchTab('routine', this)"><span class="ico">📋</span>রুটিন</button>
+  <button class="nav-btn" onclick="switchTab('focus', this)"><span class="ico">⏱️</span>ফোকাস</button>
+  <button class="nav-btn" onclick="switchTab('exam', this)"><span class="ico">📝</span>পরীক্ষা</button>
+  <button class="nav-btn" onclick="switchTab('book', this)"><span class="ico">📖</span>বই পড়ুন</button>
+  <button class="nav-btn" onclick="switchTab('notes', this)"><span class="ico">🗂️</span>নোটস</button>
+</nav>
+
+<script>
+  // --- Safe Storage ---
+  var memStore = {}, hasStorage = false;
+  try { window.localStorage.setItem('_t', '1'); window.localStorage.removeItem('_t'); hasStorage = true; } catch (e) {}
+  function safeGet(k, def) {
+    try { if (hasStorage) { var v = window.localStorage.getItem(k); return v !== null ? v : def; } } catch (e) {}
+    return (k in memStore) ? memStore[k] : def;
+  }
+  function safeSet(k, v) {
+    memStore[k] = v;
+    try { if (hasStorage) window.localStorage.setItem(k, v); } catch (e) {}
+  }
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, function(m) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+    });
+  }
+
+  // --- Navigation ---
+  function switchTab(name, btn) {
+    var pages = document.querySelectorAll('.tab-page');
+    for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+    var btns = document.querySelectorAll('.nav-btn');
+    for (var j = 0; j < btns.length; j++) btns[j].classList.remove('active');
+    var target = document.getElementById('tab-' + name);
+    if (target) target.classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+
+  // --- Theme ---
+  if (safeGet('darkTheme', '0') === '1') document.body.classList.add('dark');
+  function updateThemeBtn() {
+    document.getElementById('themeBtn').textContent = document.body.classList.contains('dark') ? '☀️ লাইট' : '🌙 ডার্ক';
+  }
+  updateThemeBtn();
+  function toggleTheme() {
+    document.body.classList.toggle('dark');
+    safeSet('darkTheme', document.body.classList.contains('dark') ? '1' : '0');
+    updateThemeBtn();
+  }
+
+  // --- Routine Sub-tabs ---
+  function switchRoutineSub(mode) {
+    document.getElementById('subDailyBtn').classList.toggle('active', mode === 'daily');
+    document.getElementById('subWeeklyBtn').classList.toggle('active', mode === 'weekly');
+    document.getElementById('dailyRoutineBox').style.display = mode === 'daily' ? 'block' : 'none';
+    document.getElementById('weeklyRoutineBox').style.display = mode === 'weekly' ? 'block' : 'none';
+  }
+
+  // --- Daily Routine ---
+  var dailyRoutines = JSON.parse(safeGet('studyDailyV3', '[]'));
+  if (!dailyRoutines.length) {
+    dailyRoutines = [
+      { id: 1, title: 'ফজর সালাত, কুরআন তিলাওয়াত ও সকালের কঠিন পড়া', startTime: '05:00', endTime: '07:00', done: false },
+      { id: 2, title: 'সকালের স্বাস্থ্যকর নাস্তা ও ক্লাসের প্রস্তুতি', startTime: '07:30', endTime: '08:30', done: false },
+      { id: 3, title: 'মাদ্রাসা/কলেজে ক্লাস ও লেকচার নোট করা', startTime: '09:00', endTime: '14:00', done: false },
+      { id: 4, title: 'যোহর, দুপুরের খাবার ও হালকা বিশ্রাম', startTime: '14:00', endTime: '16:00', done: false },
+      { id: 5, title: 'আসর, হাঁটাহাঁটি ও মাগরিবের প্রস্তুতি', startTime: '16:30', endTime: '17:45', done: false },
+      { id: 6, title: 'সন্ধ্যার মূল পাঠ্যবই পড়া ও লেখা অনুশীলন', startTime: '18:30', endTime: '20:30', done: false },
+      { id: 7, title: 'রাতের খাবার, ইশা ও দিনের পড়া রিভিশন', startTime: '21:00', endTime: '22:30', done: false },
+      { id: 8, title: '📵 কোর্সের পড়া ছাড়া অযথা সোশ্যাল মিডিয়ায় না ঢোকা', startTime: '00:00', endTime: '23:59', done: false },
+      { id: 9, title: 'রাতের ঘুম (পর্যাপ্ত ৬.৫-৭ ঘণ্টা ঘুম)', startTime: '23:00', endTime: '05:00', done: false }
+    ];
+    safeSet('studyDailyV3', JSON.stringify(dailyRoutines));
+  }
+  function saveDaily() {
+    dailyRoutines.sort(function(a, b) { return (a.startTime || '').localeCompare(b.startTime || ''); });
+    safeSet('studyDailyV3', JSON.stringify(dailyRoutines));
+    renderDailyRoutines();
+  }
+  function addDailyRoutine() {
+    var title = document.getElementById('dTitle').value.trim();
+    var startTime = document.getElementById('dStart').value || '06:00';
+    var endTime = document.getElementById('dEnd').value || '07:30';
+    if (!title) return alert('কী পড়বেন বা করবেন তা লিখুন');
+    dailyRoutines.push({ id: Date.now(), title: title, startTime: startTime, endTime: endTime, done: false });
+    document.getElementById('dTitle').value = '';
+    saveDaily();
+  }
+  function toggleDaily(id) {
+    for (var i = 0; i < dailyRoutines.length; i++) {
+      if (dailyRoutines[i].id === id) { dailyRoutines[i].done = !dailyRoutines[i].done; break; }
+    }
+    saveDaily();
+  }
+  function deleteDaily(id) {
+    dailyRoutines = dailyRoutines.filter(function(x) { return x.id !== id; });
+    saveDaily();
+  }
+  function resetDailyChecks() {
+    dailyRoutines.forEach(function(r) { r.done = false; });
+    saveDaily();
+  }
+  function setRoutineNotif(id) {
+    var r = dailyRoutines.find(function(x) { return x.id === id; });
+    if (!r) return;
+    var parts = (r.startTime || '08:00').split(':');
+    var hh = parseInt(parts[0], 10) || 8, mm = parseInt(parts[1], 10) || 0;
+    if (window.AndroidApp && window.AndroidApp.scheduleDailyNotification) {
+      window.AndroidApp.scheduleDailyNotification(Math.abs(r.id % 100000), '📚 পড়ার সময়: ' + r.title, 'এখন আপনার রুটিন অনুযায়ী পড়াশোনার সময়!', hh, mm);
+    } else {
+      var now = new Date(), ep = (r.endTime || '09:00').split(':');
+      var pad = function(n) { return String(n).padStart(2, '0'); };
+      var ymd = now.getFullYear() + pad(now.getMonth()+1) + pad(now.getDate());
+      var ics = [
+        'BEGIN:VCALENDAR', 'VERSION:2.0', 'BEGIN:VEVENT', 'SUMMARY:পড়াশোনা: ' + r.title,
+        'DTSTART:' + ymd + 'T' + pad(hh) + pad(mm) + '00',
+        'DTEND:' + ymd + 'T' + pad(ep[0]) + pad(ep[1]) + '00',
+        'RRULE:FREQ=DAILY', 'BEGIN:VALARM', 'TRIGGER:-PT5M', 'ACTION:DISPLAY', 'DESCRIPTION:রুটিনের সময় হয়েছে!', 'END:VALARM',
+        'END:VEVENT', 'END:VCALENDAR'
+      ].join('\r\n');
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+      a.download = 'study-routine.ics'; a.click();
+    }
+  }
+  function renderDailyRoutines() {
+    var list = document.getElementById('dailyRoutineList');
+    var doneCount = dailyRoutines.filter(function(r) { return r.done; }).length, total = dailyRoutines.length;
+    document.getElementById('dailyProgressText').textContent = doneCount + '/' + total + ' সম্পন্ন (' + (total ? Math.round(doneCount/total*100) : 0) + '%)';
+    document.getElementById('dailyProgressBar').style.width = total ? (doneCount/total*100) + '%' : '0%';
+    if (!total) { list.innerHTML = '<p style="color:var(--muted);font-size:13px;">কোনো রুটিন নেই।</p>'; return; }
+    list.innerHTML = dailyRoutines.map(function(r) {
+      var timeLbl = (r.startTime === '00:00' && r.endTime === '23:59') ? 'সারাদিন মেনে চলা' : (escapeHtml(r.startTime) + ' - ' + escapeHtml(r.endTime));
+      return '<div class="routine-item">' +
+        '<input type="checkbox" ' + (r.done ? 'checked' : '') + ' onchange="toggleDaily(' + r.id + ')" />' +
+        '<div class="routine-info ' + (r.done ? 'done' : '') + '">' +
+          '<div class="r-title">' + escapeHtml(r.title) + '</div>' +
+          '<div class="r-time">⏰ ' + timeLbl + '</div>' +
+        '</div>' +
+        '<button class="btn btn-sm btn-outline" title="প্রতিদিনের অ্যালার্ম/নোটিফিকেশন সেট" onclick="setRoutineNotif(' + r.id + ')">🔔</button>' +
+        '<button class="btn btn-sm btn-danger" onclick="deleteDaily(' + r.id + ')">✕</button></div>';
+    }).join('');
+  }
+  renderDailyRoutines();
+
+  // --- Weekly Routine ---
+  var bnDays = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+  var dayOrder = { 'শনিবার': 1, 'রবিবার': 2, 'সোমবার': 3, 'মঙ্গলবার': 4, 'বুধবার': 5, 'বৃহস্পতিবার': 6, 'শুক্রবার': 7 };
+  var todayDayName = bnDays[new Date().getDay()];
+  document.getElementById('todayName').textContent = todayDayName;
+
+  var weeklyRoutines = JSON.parse(safeGet('studyWeeklyV3', '[]'));
+  if (!weeklyRoutines.length) {
+    weeklyRoutines = [
+      { id: 11, day: 'শনিবার', time: '19:00', title: 'কুরআন/হাদীস ও আরবি ১ম পত্র অনুশীলন', done: false },
+      { id: 12, day: 'রবিবার', time: '19:00', title: 'ইংরেজি ১ম ও ২য় পত্র গ্রামার চর্চা', done: false },
+      { id: 13, day: 'সোমবার', time: '19:00', title: 'বাংলা ১ম ও ২য় পত্র এবং হ্যান্ডনোট তৈরি', done: false },
+      { id: 14, day: 'মঙ্গলবার', time: '19:00', title: 'আরবি ২য় পত্র ও ফিকহ/গ্রুপ বিষয় পড়া', done: false },
+      { id: 15, day: 'বুধবার', time: '19:00', title: 'কঠিন অধ্যায়গুলো লেখা ও অবজেক্টিভ চর্চা', done: false },
+      { id: 16, day: 'বৃহস্পতিবার', time: '19:00', title: 'পুরো সপ্তাহের পড়া রিভিশন দেওয়া', done: false },
+      { id: 17, day: 'শুক্রবার', time: '09:00', title: 'বাসায় ঘড়ি ধরে পরীক্ষা দেওয়া ও মা-বাবার সাথে সময়', done: false }
+    ];
+    safeSet('studyWeeklyV3', JSON.stringify(weeklyRoutines));
+  }
+  function saveWeekly() {
+    weeklyRoutines.sort(function(a, b) {
+      var dDiff = (dayOrder[a.day] || 9) - (dayOrder[b.day] || 9);
+      return dDiff !== 0 ? dDiff : (a.time || '').localeCompare(b.time || '');
+    });
+    safeSet('studyWeeklyV3', JSON.stringify(weeklyRoutines));
+    renderWeeklyRoutines();
+  }
+  function addWeeklyRoutine() {
+    var day = document.getElementById('wDay').value;
+    var time = document.getElementById('wTime').value || '19:00';
+    var title = document.getElementById('wTitle').value.trim();
+    if (!title) return alert('কী পড়বেন তা লিখুন');
+    weeklyRoutines.push({ id: Date.now(), day: day, time: time, title: title, done: false });
+    document.getElementById('wTitle').value = '';
+    saveWeekly();
+  }
+  function toggleWeekly(id) {
+    for (var i = 0; i < weeklyRoutines.length; i++) {
+      if (weeklyRoutines[i].id === id) { weeklyRoutines[i].done = !weeklyRoutines[i].done; break; }
+    }
+    saveWeekly();
+  }
+  function deleteWeekly(id) {
+    weeklyRoutines = weeklyRoutines.filter(function(x) { return x.id !== id; });
+    saveWeekly();
+  }
+  function resetWeeklyChecks() {
+    weeklyRoutines.forEach(function(r) { r.done = false; });
+    saveWeekly();
+  }
+  function renderWeeklyRoutines() {
+    var filter = document.getElementById('weeklyFilter').value;
+    var visible = filter === 'today' ? weeklyRoutines.filter(function(r) { return r.day === todayDayName; }) : weeklyRoutines;
+    var list = document.getElementById('weeklyRoutineList');
+    var doneCount = visible.filter(function(r) { return r.done; }).length, total = visible.length;
+    document.getElementById('weeklyProgressText').textContent = doneCount + '/' + total + ' সম্পন্ন (' + (total ? Math.round(doneCount/total*100) : 0) + '%)';
+    document.getElementById('weeklyProgressBar').style.width = total ? (doneCount/total*100) + '%' : '0%';
+    if (!total) { list.innerHTML = '<p style="color:var(--muted);font-size:13px;">এই বারের জন্য কোনো রুটিন নেই।</p>'; return; }
+    list.innerHTML = visible.map(function(r) {
+      return '<div class="routine-item">' +
+        '<input type="checkbox" ' + (r.done ? 'checked' : '') + ' onchange="toggleWeekly(' + r.id + ')" />' +
+        '<div class="routine-info ' + (r.done ? 'done' : '') + '">' +
+          '<div class="r-title"><span class="badge">' + escapeHtml(r.day) + '</span> ' + escapeHtml(r.title) + '</div>' +
+          '<div class="r-time">⏰ ' + escapeHtml(r.time) + '</div>' +
+        '</div>' +
+        '<button class="btn btn-sm btn-danger" onclick="deleteWeekly(' + r.id + ')">✕</button></div>';
+    }).join('');
+  }
+  renderWeeklyRoutines();
+
+  // --- EXAM SYSTEM (TAKE EXAM + CREATE QUESTIONS + AVERAGE & ARRANGE) ---
+  function switchExamMode(mode) {
+    document.getElementById('exSubTake').classList.toggle('active', mode === 'take');
+    document.getElementById('exSubMake').classList.toggle('active', mode === 'make');
+    document.getElementById('exSubAvg').classList.toggle('active', mode === 'avg');
+    document.getElementById('examTakePanel').style.display = mode === 'take' ? 'block' : 'none';
+    document.getElementById('examMakePanel').style.display = mode === 'make' ? 'block' : 'none';
+    document.getElementById('examAvgPanel').style.display = mode === 'avg' ? 'block' : 'none';
+  }
+
+  var questions = JSON.parse(safeGet('studyQuestions', '[]'));
+  if (safeGet('studyQInit', '0') !== '1' && !questions.length) {
+    questions = [
+      { id: 101, sub: 'পড়ালেখার কৌশল', text: 'পবিত্র কুরআনে সর্বপ্রথম কোন শব্দ নাযিল হয়েছিল?', A: 'ইকরা (পড়)', B: 'উকতুব (লিখ)', C: 'ইসমা (শোনো)', D: 'কুল (বলো)', ans: 'A' },
+      { id: 102, sub: 'পড়ালেখার কৌশল', text: 'Robinson-এর কার্যকর অধ্যয়নের কৌশল কোনটি?', A: 'SQ2R', B: 'Survey Q 3R', C: 'PQRST', D: 'ABCD', ans: 'B' },
+      { id: 103, sub: 'পড়ালেখার কৌশল', text: 'প্রতিদিন বাংলা ও ইংরেজিতে কমপক্ষে কত পৃষ্ঠা লেখার চর্চা করা উচিত?', A: '২ পৃষ্ঠা', B: '৫ পৃষ্ঠা', C: '১০ পৃষ্ঠা', D: '২০ পৃষ্ঠা', ans: 'C' }
+    ];
+    safeSet('studyQuestions', JSON.stringify(questions));
+    safeSet('studyQInit', '1');
+  }
+
+  function addQuestion() {
+    var sub = document.getElementById('qSub').value.trim() || 'সাধারণ';
+    var text = document.getElementById('qText').value.trim();
+    var A = document.getElementById('qA').value.trim();
+    var B = document.getElementById('qB').value.trim();
+    var C = document.getElementById('qC').value.trim();
+    var D = document.getElementById('qD').value.trim();
+    var ans = document.getElementById('qAns').value;
+    if (!text || !A || !B || !C || !D) return alert('প্রশ্ন এবং ৪টি অপশনই লিখুন');
+    questions.unshift({ id: Date.now(), sub: sub, text: text, A: A, B: B, C: C, D: D, ans: ans });
+    safeSet('studyQuestions', JSON.stringify(questions));
+    safeSet('studyQInit', '1');
+    document.getElementById('qText').value = '';
+    document.getElementById('qA').value = ''; document.getElementById('qB').value = '';
+    document.getElementById('qC').value = ''; document.getElementById('qD').value = '';
+    renderQuestionBank();
+    alert('✅ প্রশ্ন সেভ হয়েছে! এখন "পরীক্ষা দিন" ট্যাবে গিয়ে পরীক্ষা দিতে পারবেন।');
+  }
+  function deleteQuestion(id) {
+    questions = questions.filter(function(q) { return q.id !== id; });
+    safeSet('studyQuestions', JSON.stringify(questions));
+    safeSet('studyQInit', '1');
+    renderQuestionBank();
+  }
+  function renderQuestionBank() {
+    document.getElementById('qCount').textContent = questions.length;
+    var box = document.getElementById('questionBankList');
+    if (!questions.length) {
+      box.innerHTML = '<small style="color:var(--muted);">এখনো কোনো প্রশ্ন নেই। ওপরে নতুন প্রশ্ন তৈরি করুন।</small>';
+    } else {
+      box.innerHTML = questions.map(function(q, idx) {
+        return '<div class="routine-item"><div class="routine-info">' +
+          '<div class="r-title" style="font-size:14px;">' + (idx + 1) + '. ' + escapeHtml(q.text) + '</div>' +
+          '<div class="r-time"><span class="badge">' + escapeHtml(q.sub) + '</span> সঠিক: <strong>' + escapeHtml(q[q.ans]) + '</strong></div></div>' +
+          '<button class="btn btn-sm btn-danger" onclick="deleteQuestion(' + q.id + ')">✕</button></div>';
+      }).join('');
+    }
+    var sel = document.getElementById('quizSubjectSelect'), subs = [];
+    questions.forEach(function(q) { if (subs.indexOf(q.sub) === -1) subs.push(q.sub); });
+    var html = '<option value="__ALL__">সব বিষয় মিলিয়ে (' + questions.length + 'টি প্রশ্ন)</option>';
+    subs.forEach(function(s) {
+      var cnt = questions.filter(function(q) { return q.sub === s; }).length;
+      html += '<option value="' + escapeHtml(s) + '">' + escapeHtml(s) + ' (' + cnt + 'টি প্রশ্ন)</option>';
+    });
+    sel.innerHTML = html;
+  }
+
+  var activeQuiz = [], userAnswers = {}, quizTimer = null, quizEndTs = 0, activeQuizSub = '';
+  function startQuiz() {
+    var sub = document.getElementById('quizSubjectSelect').value;
+    var mins = parseInt(document.getElementById('quizMinutes').value, 10) || 5;
+    activeQuiz = (sub === '__ALL__' ? questions.slice() : questions.filter(function(q) { return q.sub === sub; }));
+    if (!activeQuiz.length) return alert('কোনো প্রশ্ন নেই! আগে "প্রশ্ন বানান" ট্যাবে গিয়ে প্রশ্ন যোগ করুন।');
+    activeQuizSub = (sub === '__ALL__' ? 'সকল বিষয়' : sub);
+    userAnswers = {};
+    document.getElementById('quizSetupCard').style.display = 'none';
+    document.getElementById('quizResultCard').style.display = 'none';
+    document.getElementById('quizRunCard').style.display = 'block';
+    document.getElementById('quizHeaderSub').textContent = activeQuizSub + ' (' + activeQuiz.length + 'টি প্রশ্ন)';
+    renderQuizQuestions();
+    quizEndTs = Date.now() + mins * 60 * 1000;
+    clearInterval(quizTimer);
+    quizTimer = setInterval(function() {
+      var left = Math.max(0, Math.ceil((quizEndTs - Date.now()) / 1000));
+      var m = Math.floor(left / 60), s = left % 60;
+      document.getElementById('quizClock').textContent = '⏱️ ' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+      if (left <= 0) submitQuiz(true);
+    }, 500);
+  }
+  function renderQuizQuestions() {
+    var labels = { A: 'ক', B: 'খ', C: 'গ', D: 'ঘ' };
+    document.getElementById('quizBody').innerHTML = activeQuiz.map(function(q, idx) {
+      var optsHtml = ['A', 'B', 'C', 'D'].map(function(opt) {
+        var sel = userAnswers[idx] === opt ? ' selected' : '';
+        return '<button class="quiz-opt' + sel + '" onclick="selectQuizOpt(' + idx + ', \'' + opt + '\')">' +
+          labels[opt] + ') ' + escapeHtml(q[opt]) + '</button>';
+      }).join('');
+      return '<div class="quiz-q"><div class="quiz-q-title">' + (idx + 1) + '. ' + escapeHtml(q.text) + '</div>' + optsHtml + '</div>';
+    }).join('');
+  }
+  function selectQuizOpt(idx, opt) { userAnswers[idx] = opt; renderQuizQuestions(); }
+  function cancelQuiz() { clearInterval(quizTimer); resetQuizUI(); }
+  function resetQuizUI() {
+    clearInterval(quizTimer);
+    document.getElementById('quizRunCard').style.display = 'none';
+    document.getElementById('quizResultCard').style.display = 'none';
+    document.getElementById('quizSetupCard').style.display = 'block';
+  }
+  function submitQuiz(auto) {
+    clearInterval(quizTimer);
+    if (auto) alert('⏰ পরীক্ষার সময় শেষ! ফলাফল তৈরি হচ্ছে।');
+    var correct = 0, wrong = 0, total = activeQuiz.length, labels = { A: 'ক', B: 'খ', C: 'গ', D: 'ঘ' };
+    var reviewHtml = activeQuiz.map(function(q, idx) {
+      var u = userAnswers[idx];
+      if (u === q.ans) correct++; else if (u) wrong++;
+      var opts = ['A', 'B', 'C', 'D'].map(function(opt) {
+        var cls = opt === q.ans ? ' correct' : (u === opt && u !== q.ans ? ' wrong' : '');
+        return '<div class="quiz-opt' + cls + '" style="cursor:default;">' + labels[opt] + ') ' + escapeHtml(q[opt]) +
+          (opt === q.ans ? ' ✅' : (u === opt ? ' ❌ (আপনার উত্তর)' : '')) + '</div>';
+      }).join('');
+      return '<div class="quiz-q"><div class="quiz-q-title">' + (idx + 1) + '. ' + escapeHtml(q.text) + '</div>' + opts + '</div>';
+    }).join('');
+    var pct = Math.round((correct / total) * 100);
+    document.getElementById('quizRunCard').style.display = 'none';
+    document.getElementById('quizResultCard').style.display = 'block';
+    document.getElementById('quizResultSummary').innerHTML =
+      '<div class="avg-box"><strong>' + correct + '/' + total + '</strong><span>সঠিক উত্তর</span></div>' +
+      '<div class="avg-box"><strong style="color:var(--danger);">' + wrong + '</strong><span>ভুল উত্তর</span></div>' +
+      '<div class="avg-box"><strong style="color:var(--success);">' + pct + '%</strong><span>প্রাপ্ত নম্বর</span></div>';
+    document.getElementById('quizReviewList').innerHTML = reviewHtml;
+    scores.unshift({ id: Date.now(), sub: 'পরীক্ষা: ' + activeQuizSub, obt: correct, full: total });
+    safeSet('studyScores', JSON.stringify(scores));
+    renderScores();
+  }
+
+  var scores = JSON.parse(safeGet('studyScores', '[]'));
+  function addScore() {
+    var sub = document.getElementById('scoreSub').value.trim();
+    var obt = parseFloat(document.getElementById('scoreObt').value);
+    var full = parseFloat(document.getElementById('scoreFull').value);
+    if (!sub || isNaN(obt) || isNaN(full) || full <= 0) return alert('বিষয় ও সঠিক নম্বর লিখুন');
+    scores.unshift({ id: Date.now(), sub: sub, obt: obt, full: full });
+    safeSet('studyScores', JSON.stringify(scores));
+    document.getElementById('scoreSub').value = ''; document.getElementById('scoreObt').value = '';
+    renderScores();
+  }
+  function deleteScore(id) { scores = scores.filter(function(s) { return s.id !== id; }); safeSet('studyScores', JSON.stringify(scores)); renderScores(); }
+  function clearScores() { if (scores.length && confirm('সব নম্বর মুছে ফেলবেন?')) { scores = []; safeSet('studyScores', '[]'); renderScores(); } }
+  function renderScores() {
+    var totalObt = scores.reduce(function(a, b) { return a + b.obt; }, 0);
+    var totalFull = scores.reduce(function(a, b) { return a + b.full; }, 0);
+    var mean = scores.length ? (totalObt / scores.length).toFixed(1) : 0;
+    var pct = totalFull > 0 ? ((totalObt / totalFull) * 100).toFixed(1) : 0;
+    document.getElementById('avgTotal').textContent = totalObt + '/' + totalFull;
+    document.getElementById('avgMean').textContent = mean;
+    document.getElementById('avgPercent').textContent = pct + '%';
+    var box = document.getElementById('scoreList');
+    if (!scores.length) { box.innerHTML = '<small style="color:var(--muted);">পরীক্ষা দিলে বা নম্বর যোগ করলে গড় দেখাবে।</small>'; return; }
+    box.innerHTML = scores.map(function(s) {
+      return '<div class="routine-item"><div class="routine-info"><div class="r-title" style="font-size:14px;">' + escapeHtml(s.sub) + '</div>' +
+        '<div class="r-time">প্রাপ্ত: ' + s.obt + ' / ' + s.full + ' (' + ((s.obt/s.full)*100).toFixed(1) + '%)</div></div>' +
+        '<button class="btn btn-sm btn-danger" onclick="deleteScore(' + s.id + ')">✕</button></div>';
+    }).join('');
+  }
+  renderQuestionBank();
+  renderScores();
+
+  var examArrange = JSON.parse(safeGet('studyExamArrange', '[]'));
+  function addExamItem() {
+    var name = document.getElementById('examSubName').value.trim(), date = document.getElementById('examSubDate').value, time = document.getElementById('examSubTime').value || '10:00';
+    if (!name || !date) return alert('পরীক্ষার নাম ও তারিখ দিন');
+    examArrange.push({ id: Date.now(), name: name, date: date, time: time });
+    examArrange.sort(function(a, b) { return a.date.localeCompare(b.date); });
+    safeSet('studyExamArrange', JSON.stringify(examArrange));
+    document.getElementById('examSubName').value = '';
+    renderExamArrange();
+  }
+  function deleteExamItem(id) { examArrange = examArrange.filter(function(x) { return x.id !== id; }); safeSet('studyExamArrange', JSON.stringify(examArrange)); renderExamArrange(); }
+  function renderExamArrange() {
+    var box = document.getElementById('examArrangeList');
+    if (!examArrange.length) { box.innerHTML = '<small style="color:var(--muted);">কোনো পরীক্ষার সময়সূচি যোগ করা হয়নি।</small>'; return; }
+    var todayZero = new Date().setHours(0,0,0,0);
+    box.innerHTML = examArrange.map(function(e) {
+      var diff = Math.ceil((new Date(e.date) - todayZero) / 86400000);
+      var badge = diff > 0 ? '<span style="color:var(--danger);font-weight:700;">' + diff + ' দিন বাকি</span>'
+        : (diff === 0 ? '<span style="color:var(--success);font-weight:700;">আজই পরীক্ষা!</span>' : '<span style="color:var(--muted);">সম্পন্ন</span>');
+      return '<div class="routine-item"><div class="routine-info"><div class="r-title" style="font-size:14px;">' + escapeHtml(e.name) + '</div>' +
+        '<div class="r-time">📆 ' + escapeHtml(e.date) + ' | ⏰ ' + escapeHtml(e.time) + ' — ' + badge + '</div></div>' +
+        '<button class="btn btn-sm btn-danger" onclick="deleteExamItem(' + e.id + ')">✕</button></div>';
+    }).join('');
+  }
+  renderExamArrange();
+
+  // --- Focus Timer ---
+  var timerDuration = 25 * 60, remainingSecs = 25 * 60, timerInterval = null, endTimestamp = null, wakeLock = null;
+  function loadTodayMins() {
+    var today = new Date().toDateString(), saved = JSON.parse(safeGet('studyStats', '{}'));
+    document.getElementById('todayStudyMins').textContent = saved.date === today ? saved.mins : 0;
+  }
+  loadTodayMins();
+  function addStudyMins(mins) {
+    var today = new Date().toDateString(), saved = JSON.parse(safeGet('studyStats', '{}'));
+    safeSet('studyStats', JSON.stringify({ date: today, mins: (saved.date === today ? saved.mins : 0) + mins }));
+    loadTodayMins();
+  }
+  function updateTimerDisplay() {
+    var m = Math.floor(remainingSecs / 60), s = remainingSecs % 60;
+    document.getElementById('timerDisplay').textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }
+  function setTimer(mins) { pauseTimer(); timerDuration = mins * 60; remainingSecs = timerDuration; updateTimerDisplay(); }
+  function setCustomTimer() { var m = parseInt(document.getElementById('customMins').value, 10); if (m >= 1 && m <= 180) setTimer(m); }
+  function startTimer() {
+    if (timerInterval) return;
+    if (window.AndroidApp && window.AndroidApp.scheduleTimerNotification) {
+      window.AndroidApp.scheduleTimerNotification(remainingSecs, '⏰ ফোকাস টাইমার শেষ!', 'দারুণ করেছ! তোমার পড়ার সেশন সম্পন্ন হয়েছে।');
+    }
+    try { if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission(); } catch(e) {}
+    try { if ('wakeLock' in navigator) navigator.wakeLock.request('screen').then(function(wl){ wakeLock = wl; }).catch(function(){}); } catch(e) {}
+    endTimestamp = Date.now() + remainingSecs * 1000;
+    timerInterval = setInterval(function() {
+      remainingSecs = Math.max(0, Math.ceil((endTimestamp - Date.now()) / 1000));
+      updateTimerDisplay();
+      if (remainingSecs <= 0) {
+        pauseTimer(); playAlarm();
+        var minsCompleted = Math.round(timerDuration / 60);
+        if (minsCompleted >= 5) addStudyMins(minsCompleted);
+        try { if ('Notification' in window && Notification.permission === 'granted') new Notification('⏰ সময় শেষ!', { body: 'তোমার পড়ার সেশন সম্পন্ন!' }); } catch(e) {}
+        alert('⏰ সময় শেষ! দারুণ করেছ!');
+        remainingSecs = timerDuration; updateTimerDisplay();
+      }
+    }, 500);
+  }
+  function pauseTimer() {
+    clearInterval(timerInterval); timerInterval = null;
+    if (window.AndroidApp && window.AndroidApp.cancelTimerNotification) {
+      window.AndroidApp.cancelTimerNotification();
+    }
+    if (wakeLock) { try { wakeLock.release(); } catch(e) {} wakeLock = null; }
+  }
+  function resetTimer() { pauseTimer(); remainingSecs = timerDuration; updateTimerDisplay(); }
+  function toggleFullscreenFocus() {
+    document.body.classList.toggle('focus-fullscreen');
+    document.getElementById('fsBtn').textContent = document.body.classList.contains('focus-fullscreen') ? '✕ সাধারণ মোড' : '🖥 ফুলস্ক্রিন ফোকাস';
+  }
+  function playAlarm() {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      [0, 0.35, 0.7].forEach(function(delay) {
+        var osc = ctx.createOscillator(), gain = ctx.createGain();
+        osc.type = 'sine'; osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.4, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + delay + 0.25);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay); osc.stop(ctx.currentTime + delay + 0.28);
+      });
+    } catch(e) {}
+  }
+  function testAlarm() { playAlarm(); }
+
+  // --- Book: পড়ালেখায় ভালো হওয়ার কৌশল + আলিম A+ + পড়ার ও খাওয়ার নিয়ম ---
+  var chapters = [
+    {
+      title: '⭐ ১. আলিম (Alim) পরীক্ষায় A+ পাওয়ার বিশেষ কৌশল',
+      body: '<p>আলিম পরীক্ষায় A+ পেতে হলে প্রতিটি বিষয়ের ওপর সমান গুরুত্ব এবং কৌশলী প্রস্তুতি নেওয়া জরুরি।</p><h4>আলিম A+ প্রস্তুতির মূল নিয়মাবলি:</h4><ul>' +
+        '<li><strong>কুরআন, হাদীস ও ফিকহ:</strong> প্রশ্নের উত্তরে প্রাসঙ্গিক কুরআনের আয়াত ও হাদীস নির্ভুলভাবে আরবিতে কোটেশন ও বঙ্গানুবাদসহ লিখলে পূর্ণ নম্বর পাওয়া সহজ হয়। সূরার নাম ও আয়াত নম্বর স্পষ্ট করে লিখবে।</li>' +
+        '<li><strong>আরবি ১ম ও ২য় পত্র:</strong> কাওয়ায়েদ (গ্রামার), তারকীব, তাহকীক এবং আরবি রচনা/দরখাস্ত প্রতিদিন লিখে চর্চা করো। ভোকাবুলারি আলাদা নোট খাতায় লিখে মুখস্থ রাখো।</li>' +
+        '<li><strong>বাংলা ও ইংরেজি:</strong> অনেকেই শুধু আরবি বিষয় পড়ে বাংলা ও ইংরেজিতে অবহেলা করে, ফলে সামগ্রিক A+ ছুটে যায়। প্রতিদিন অন্তত ১ ঘণ্টা ইংরেজি গ্রামার ও বাংলা পড়ো।</li>' +
+        '<li><strong>হ্যান্ডনোট ও টেস্ট পেপার:</strong> বড় প্রশ্নগুলো নিজে পয়েন্ট আকারে হ্যান্ডনোট করে রাখো। বিগত ৫-৭ বছরের আলিম বোর্ড প্রশ্ন ও টেস্ট পেপার ঘড়ি ধরে বাসায় পরীক্ষা দাও।</li>' +
+        '<li><strong>সময় ও অবজেক্টিভ:</strong> প্রতিদিন কমপক্ষে ৬-৯ ঘণ্টা নিয়মিত পড়া এবং ৪০-এর মধ্যে ৩৮+ পেতে মূল বইয়ের প্রতিটি লাইন দাগিয়ে অবজেক্টিভ পড়ো।</li></ul>'
+    },
+    {
+      title: '🥗 ২. ছাত্র-ছাত্রীদের আদর্শ পড়ার নিয়ম ও খাওয়া-দাওয়া',
+      body: '<h4>পড়ালেখার আদর্শ নিয়ম:</h4><ul>' +
+        '<li><strong>বসার সঠিক নিয়ম:</strong> নরম সোফা বা বিছানায় শুয়ে নয়, শক্ত কাঠের চেয়ার-টেবিলে সোজা হয়ে বসে পড়ো।</li>' +
+        '<li><strong>শুরুতে দোয়া ও মনোযোগ:</strong> <em>আউযুবিল্লাহ</em> ও <em>বিসমিল্লাহ</em> পড়ে পড়া শুরু করো। একটানা না পড়ে ২৫ বা ৫০ মিনিট পর ৫ মিনিট বিরতি নাও।</li>' +
+        '<li><strong>পড়ার পর লেখা:</strong> যা পড়বে তা না দেখে রাফ খাতায় লেখার অভ্যাস করো, এতে হাতের লেখা দ্রুত ও সুন্দর হবে এবং পড়া ভুলবে না।</li></ul>' +
+        '<h4>মেধা ও স্মরণশক্তি বৃদ্ধিতে খাওয়া-দাওয়ার নিয়ম:</h4><ul>' +
+        '<li><strong>সুষম ও ভিটামিনযুক্ত খাবার:</strong> শরীরের দুর্বলতা ও পড়ার সময় ঘুম দূর করতে নিয়মিত <strong>দুধ, ডিম, কলা, শাকসবজি ও মৌসুমি ফল</strong> খাও।</li>' +
+        '<li><strong>স্মরণশক্তি বাড়াতে:</strong> সকালে খালি পেটে কয়েকটি <strong>কিসমিস</strong> ও পরিমিত <strong>মধু</strong> খাওয়া অত্যন্ত উপকারী।</li>' +
+        '<li><strong>রাতের খাবার (অত্যন্ত গুরুত্বপূর্ণ):</strong> রাতে পড়তে বসার আগে পেট ভরে ভারী খাবার খেলে প্রচণ্ড ঘুম আসে। তাই রাতে তুলনামূলক <strong>কম ও হালকা খাবার</strong> খাও এবং পর্যাপ্ত পানি পান করো।</li>' +
+        '<li><strong>ঘুম ও বিশ্রাম:</strong> রাত ১১:৩০-এর মধ্যে ঘুমিয়ে ফজরে ওঠার অভ্যাস করো; রাত জেগে পড়লে পরদিন মস্তিষ্ক ক্লান্ত থাকে।</li></ul>'
+    },
+    {
+      title: '৩. পড়ালেখা, উদ্দেশ্য ও ছাত্রদের মর্যাদা (অধ্যায় ১-৩)',
+      body: '<p><strong>পড়ালেখা স্রষ্টার প্রথম আদেশ:</strong> পবিত্র কুরআনে সর্বপ্রথম নাযিলকৃত শব্দ ছিল <em>“ইকরা”</em> (পড়) এবং সাথেই বলা হয়েছে <em>“যিনি কলমের সাহায্যে শিক্ষা দিয়েছেন”</em>।</p><h4>পড়ালেখার ২টি প্রধান উদ্দেশ্য:</h4><ul><li><strong>জীবন গঠন:</strong> চিন্তা-চেতনা, আচার-আচরণ, স্রষ্টা ও মানুষের হক আদায় করে আদর্শ মানুষ হওয়া।</li><li><strong>হালাল জীবিকা উপার্জন:</strong> যোগ্যতা অনুযায়ী কর্মসংস্থান করে নিজের ও পরিবারের দায়িত্ব নেওয়া।</li></ul><p>দুনিয়াবি স্বার্থ, অহংকার বা লোক দেখানোর উদ্দেশ্যে পড়ালেখা করা উচিত নয়।</p>'
+    },
+    {
+      title: '৪. অবজেক্টিভ বা নৈর্ব্যক্তিক পড়ার নিয়ম (অধ্যায় ৪.১)',
+      body: '<ul><li><strong>মূল বই আগে পড়া:</strong> আগে মূল অধ্যায়, লেখক ও পাঠ পরিচিতি পড়ে গুরুত্বপূর্ণ লাইন দাগিয়ে নাও।</li><li><strong>একসাথে প্রশ্ন ও সঠিক উত্তর পড়া:</strong> ভুল অপশন না পড়ে শুধু প্রশ্ন ও সঠিক উত্তর এক নিঃশ্বাসে বারবার পড়ো।</li><li><strong>পড়া দেওয়া ও ক্রস চিহ্ন:</strong> বাসায় মা, ভাই-বোন বা শিক্ষকের কাছে পড়া দাও। না পারা প্রশ্নগুলো লাল কালিতে ক্রস চিহ্ন দিয়ে তৎক্ষণাৎ আবার পড়ে নাও।</li><li><strong>টেস্ট পেপার ও রিভিশন:</strong> প্রতিদিন ১০০টি প্রশ্ন অনুশীলন ও ফরম ফিলাপের পর প্রতিদিন ৫০০ অবজেক্টিভ রিভিশন দাও।</li></ul>'
+    },
+    {
+      title: '৫. বিষয়ভিত্তিক রচনামূলক পড়ার কৌশল (অধ্যায় ৪.২-৪.৩)',
+      body: '<ul><li><strong>বাংলা:</strong> সাধু-চলিত মিশ্রণ ও বানান ভুল এড়িয়ে চলো। ভাব-সম্প্রসারণ ২-৩ অনুচ্ছেদে লেখো। সারমর্মে আমি/আমরা লিখবে না। চিঠিতে পূর্ণাঙ্গ তারিখ লিখবে।</li><li><strong>ইংরেজি:</strong> প্রতি ২ দিনে ১টি Lesson শেষ করো। অজানা শব্দের নিচে লাল দাগ দিয়ে বাংলা অর্থ, Synonym ও Antonym লেখো।</li><li><strong>গণিত:</strong> প্রতিদিন অন্তত ১ ঘণ্টা চর্চা, চিহ্নের (+, -, ×, ÷) দিকে খেয়াল, পাশে তৃতীয় বন্ধনীতে সূত্র লেখা ও সপ্তাহে ২ দিন জ্যামিতি চর্চা করো।</li><li><strong>বিজ্ঞান/ব্যবসায়/মানবিক:</strong> চিত্র অঙ্কন, সংজ্ঞা (উৎপত্তিকথা, সাধারণ ও ব্যাপক অর্থ, নিজস্ব মতামত), ছক আকারে পার্থক্য ও ঘড়ি ধরে লেখো।</li></ul>'
+    },
+    {
+      title: '৬. পড়ার পর লেখা ও ক্লাসে লেকচার নোট (অধ্যায় ৫-৬)',
+      body: '<p>শুধু পড়লে পরীক্ষার হলে ভুলে যাওয়ার ভয় থাকে। তাই পড়ার সাথে সাথে লেখার অভ্যাস করো।</p><ul><li>বিষয়ভিত্তিক খাতা নিয়ে ক্লাসে যাও, তারিখ ও শিরোনাম লিখে স্যারের লেকচার ও বোর্ডের চিত্র নোট করো।</li><li>গণিত ক্লাসে স্যার যে নিয়মে অঙ্ক করান, বাসায় সেই নিয়মেই চর্চা করবে।</li></ul>'
+    },
+    {
+      title: '৭. আদর্শ ছাত্র অনুসরণ ও সময়ের সদ্ব্যবহার (অধ্যায় ৭-৮)',
+      body: '<p>যারা নম্র-বিনয়ী, সত্যবাদী, সালাত আদায়কারী এবং অন্যকে নোট দিয়ে সাহায্য করে—তাঁদের অনুসরণ করো।</p><ul><li>সময় অস্থায়ী এবং ফিরে আসে না। রুটিনের প্রতি যত্নশীল হও।</li><li>ক্লাসের ফাঁকে বই পড়ো, পড়ার টেবিল গুছিয়ে রাখো ও সকালে সারাদিনের কাজের তালিকা লিখে রাখো।</li></ul>'
+    },
+    {
+      title: '৮. ভালো হওয়ার মূল কৌশল ও SQ3R (অধ্যায় ৯.১-৯.৫)',
+      body: '<p>জীবনের লক্ষ্য বা ভিশন ঠিক করো এবং কঠোর শ্রম ও অধ্যবসায় করো।</p><ul><li>ডিকশনারিতে কোনো শব্দ ১ম বার খুঁজলে লাল, ২য় বার সবুজ, ৩য় বার নীল টিক দাও—৩ বার টিক পড়া শব্দ মুখস্থ করে ফেলো!</li><li><strong>SQ3R কৌশল:</strong> Survey (ধারণা), Questions (প্রশ্ন তৈরি), Read (পড়া), Recite/Recall (বই বন্ধ করে স্মরণ), Review (সপ্তাহে একবার রিভিশন)।</li><li>পড়া শেষে নীরবে সারসংক্ষেপ চিন্তা করো ও নিজের হ্যান্ডনোট তৈরি করো।</li></ul>'
+    },
+    {
+      title: '৯. বাসায় পরীক্ষা ও ঘুম দূর করার উপায় (অধ্যায় ৯.৬-৯.১০)',
+      body: '<ul><li>পড়া শেষে ঘড়ি ধরে বাসায় পরীক্ষা দাও ও নিজেই লাল কালিতে ভুল সংশোধন করো।</li><li>সব বিষয়ে সমান গুরুত্ব দাও এবং বই-উপকরণকে ভালোবাসো।</li><li><strong>ঘুম দূর করতে:</strong> ৫ মিনিট ঘরে হাঁটা, চোখে ঠান্ডা পানি দেওয়া, চা/কফি বা চুইংগাম, গণিত বা রাফ লেখা, বই-খাতা গুছানো ও ১ ঘণ্টা বিশ্রাম নেওয়া।</li></ul>'
+    },
+    {
+      title: '১০. পড়া মুখস্থ ও মনে রাখার কৌশল (অধ্যায় ১০-১৬)',
+      body: '<ul><li>এক বিষয় পড়ার সময় অন্য চিন্তা বাদ দিয়ে একটু উচ্চ শব্দে এক নিঃশ্বাসে বাক্যগুলো পড়ো।</li><li>মুখস্থ হলে বই উল্টিয়ে দ্রুত রাফ খাতায় লিখো (বাংলা ১৫ লাইন/পৃষ্ঠা, ইংরেজি ১৭ লাইন/পৃষ্ঠা)। ভুলে যাওয়া লাইন লাল কালিতে দাগিয়ে আবার পড়ে লিখো।</li></ul><p><strong>উত্তম সময়:</strong> ফজরের পর, মাগরিব-ইশার মাঝে ও শেষ রাতে।<br><strong>বর্জনীয়:</strong> সূর্যাস্ত ও আযানের সময়, ঘুম চোখে, শুয়ে বা নরম ইজি চেয়ারে বসে পড়া।</p>'
+    },
+    {
+      title: '১১. শিক্ষার মাধ্যম ও স্মরণশক্তি বৃদ্ধি (অধ্যায় ১৭-১৯)',
+      body: '<p><strong>৬ মাধ্যম:</strong> পিতা-মাতা, পড়া, দেখে/অনুসরণ, শোনা, হোঁচট খেয়ে ও পরিবেশ থেকে শিক্ষা।</p><ul><li>পরিকল্পনামাফিক পড়া, সুন্দর কথা বলা, কুচিন্তা ও পরনিন্দা বর্জন।</li><li>গুনাহ ত্যাগ, নিয়মিত সালাত ও দুআ (<em>রব্বিশ রহলী ছদরী ওয়া ইয়াসসিরলী আমরী...</em> ও <em>রব্বি যিদনী ইলমা</em>)।</li></ul>'
+    },
+    {
+      title: '১২. দ্রুত লেখা, পরিবেশ, শিক্ষক ও বন্ধু (অধ্যায় ২০-২৮)',
+      body: '<ul><li><strong>দ্রুত লেখা:</strong> ঘড়ি ধরে প্রতিদিন বাংলা ও ইংরেজি কমপক্ষে ১০ পৃষ্ঠা লেখার চর্চা করো (লক্ষ্য: প্রতি পৃষ্ঠা ২-২.৫ মিনিট)।</li><li>গৃহে/হোস্টেলে পরিচ্ছন্ন ও অনুকূল পরিবেশ বজায় রাখো।</li><li>শিক্ষকদের প্রতি সর্বোচ্চ সম্মান ও আদব রক্ষা করো; সৎ ও ভালো বন্ধু নির্বাচন করো।</li><li>প্রতি বছর অন্তত ৫টি করে ভালো বই কিনে ব্যক্তিগত লাইব্রেরি গড়ে তোলো এবং ভালো বই উপহার দাও।</li></ul>'
+    }
+  ];
+
+  var currentChapterIdx = 0, bookFontSize = 15, readChapters = JSON.parse(safeGet('studyReadChapters', '[]'));
+  function renderChapters() {
+    document.getElementById('chapterList').innerHTML = chapters.map(function(c, i) {
+      return '<button class="chapter-btn" onclick="openChapter(' + i + ')"><span>' + c.title + '</span><span>' + (readChapters.indexOf(i) !== -1 ? '✅' : '▶') + '</span></button>';
+    }).join('');
+  }
+  renderChapters();
+  function openChapter(i) {
+    currentChapterIdx = i;
+    document.getElementById('chapterListCard').style.display = 'none';
+    document.getElementById('chapterReaderCard').style.display = 'block';
+    document.getElementById('chapterBody').innerHTML = '<h3>' + chapters[i].title + '</h3>' + chapters[i].body;
+    document.getElementById('chapterBody').style.fontSize = bookFontSize + 'px';
+    document.getElementById('markReadBtn').textContent = readChapters.indexOf(i) !== -1 ? '✅ পড়া হয়েছে' : '✓ পড়া সম্পন্ন';
+    document.getElementById('nextChapBtn').style.display = i < chapters.length - 1 ? 'inline-flex' : 'none';
+    window.scrollTo(0, 0);
+  }
+  function closeChapter() {
+    document.getElementById('chapterReaderCard').style.display = 'none';
+    document.getElementById('chapterListCard').style.display = 'block';
+  }
+  function toggleChapterRead() {
+    var idx = readChapters.indexOf(currentChapterIdx);
+    if (idx !== -1) readChapters.splice(idx, 1); else readChapters.push(currentChapterIdx);
+    safeSet('studyReadChapters', JSON.stringify(readChapters));
+    document.getElementById('markReadBtn').textContent = readChapters.indexOf(currentChapterIdx) !== -1 ? '✅ পড়া হয়েছে' : '✓ পড়া সম্পন্ন';
+    renderChapters();
+  }
+  function nextChapter() { if (currentChapterIdx < chapters.length - 1) openChapter(currentChapterIdx + 1); }
+  function changeFontSize(delta) {
+    bookFontSize = Math.min(23, Math.max(13, bookFontSize + delta));
+    document.getElementById('chapterBody').style.fontSize = bookFontSize + 'px';
+  }
+  function switchBookMode(mode) {
+    document.getElementById('subBookBtn').classList.toggle('active', mode === 'builtin');
+    document.getElementById('subPdfBtn').classList.toggle('active', mode === 'pdf');
+    document.getElementById('bookBuiltin').style.display = mode === 'builtin' ? 'block' : 'none';
+    document.getElementById('bookPdf').style.display = mode === 'pdf' ? 'block' : 'none';
+  }
+
+  // --- PDF Storage & Reader ---
+  var db = null, currentPdfDoc = null, currentPdfId = null, currentPdfPage = 1, currentRenderTask = null, memPdfs = [];
+  try {
+    if (window.indexedDB) {
+      var req = window.indexedDB.open('StudyAppDB', 1);
+      req.onupgradeneeded = function(e) { e.target.result.createObjectStore('pdfs', { keyPath: 'id' }); };
+      req.onsuccess = function(e) { db = e.target.result; loadSavedPdfs(); };
+      req.onerror = function() { db = null; };
+    }
+  } catch (e) { db = null; }
+
+  function handlePdfUpload(e) {
+    var file = e.target.files[0]; if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function() {
+      var item = { id: Date.now(), name: file.name, data: reader.result, lastPage: 1 };
+      if (db) {
+        try {
+          var tx = db.transaction('pdfs', 'readwrite');
+          tx.objectStore('pdfs').put(item);
+          tx.oncomplete = function() { loadSavedPdfs(); openPdfItem(item); }; return;
+        } catch(err) {}
+      }
+      memPdfs.push(item); loadSavedPdfs(); openPdfItem(item);
+    };
+    reader.readAsArrayBuffer(file); e.target.value = '';
+  }
+  function loadSavedPdfs() {
+    if (db) {
+      try {
+        var tx = db.transaction('pdfs', 'readonly');
+        tx.objectStore('pdfs').getAll().onsuccess = function(ev) { renderPdfList(ev.target.result); }; return;
+      } catch(e) {}
+    }
+    renderPdfList(memPdfs);
+  }
+  function renderPdfList(items) {
+    var box = document.getElementById('savedPdfList');
+    if (!items.length) { box.innerHTML = '<small style="color:var(--muted);">এখনো কোনো PDF যুক্ত করা হয়নি।</small>'; return; }
+    box.innerHTML = items.map(function(p) {
+      return '<div class="routine-item"><div class="routine-info"><div class="r-title" style="font-size:14px;">📄 ' + escapeHtml(p.name) + '</div>' +
+        '<div class="r-time">শেষ পড়া পৃষ্ঠা: ' + (p.lastPage || 1) + '</div></div>' +
+        '<button class="btn btn-sm" onclick="openSavedPdf(' + p.id + ')">পড়ুন</button>' +
+        '<button class="btn btn-sm btn-danger" onclick="deleteSavedPdf(' + p.id + ')">✕</button></div>';
+    }).join('');
+  }
+  function deleteSavedPdf(id) {
+    if (db) {
+      try {
+        var tx = db.transaction('pdfs', 'readwrite'); tx.objectStore('pdfs').delete(id);
+        tx.oncomplete = function() { if (currentPdfId === id) closePdfViewer(); loadSavedPdfs(); }; return;
+      } catch(e) {}
+    }
+    memPdfs = memPdfs.filter(function(p) { return p.id !== id; });
+    if (currentPdfId === id) closePdfViewer(); loadSavedPdfs();
+  }
+  function loadPdfJsScript() {
+    return new Promise(function(resolve, reject) {
+      if (window.pdfjsLib) return resolve();
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js';
+      s.onload = function() { window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'; resolve(); };
+      s.onerror = function() { reject(new Error('offline')); };
+      document.head.appendChild(s);
+    });
+  }
+  function openSavedPdf(id) {
+    if (db) {
+      try {
+        db.transaction('pdfs', 'readonly').objectStore('pdfs').get(id).onsuccess = function(ev) { if (ev.target.result) openPdfItem(ev.target.result); }; return;
+      } catch(e) {}
+    }
+    var found = memPdfs.find(function(p) { return p.id === id; }); if (found) openPdfItem(found);
+  }
+  function openPdfItem(item) {
+    currentPdfId = item.id; currentPdfPage = item.lastPage || 1;
+    document.getElementById('pdfViewerCard').style.display = 'block';
+    document.getElementById('pdfTitle').textContent = item.name;
+    var status = document.getElementById('pdfStatus'); status.textContent = 'PDF লোড হচ্ছে...';
+    loadPdfJsScript().then(function() { return window.pdfjsLib.getDocument({ data: item.data.slice(0) }).promise; })
+      .then(function(doc) { currentPdfDoc = doc; status.textContent = ''; renderPdfPage(currentPdfPage); })
+      .catch(function() { status.textContent = 'অ্যাপের ভেতর PDF রেন্ডার করতে প্রথমবার সামান্য ইন্টারনেট প্রয়োজন। তবে "পড়ার বই ও আলিম A+" সম্পূর্ণ অফলাইনেই পড়তে পারবে!'; });
+  }
+  function renderPdfPage(num) {
+    if (!currentPdfDoc) return;
+    currentPdfPage = Math.max(1, Math.min(num, currentPdfDoc.numPages));
+    document.getElementById('pdfPageInfo').textContent = 'পৃষ্ঠা ' + currentPdfPage + ' / ' + currentPdfDoc.numPages;
+    currentPdfDoc.getPage(currentPdfPage).then(function(page) {
+      var canvas = document.getElementById('pdfCanvas');
+      var scale = (canvas.parentElement.clientWidth - 28) / page.getViewport({ scale: 1 }).width;
+      var viewport = page.getViewport({ scale: scale });
+      canvas.width = viewport.width; canvas.height = viewport.height;
+      if (currentRenderTask) { try { currentRenderTask.cancel(); } catch(e) {} }
+      currentRenderTask = page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport });
+    });
+    if (db && currentPdfId) {
+      try {
+        var tx = db.transaction('pdfs', 'readwrite');
+        var st = tx.objectStore('pdfs');
+        st.get(currentPdfId).onsuccess = function(e) {
+          var rec = e.target.result;
+          if (rec) { rec.lastPage = currentPdfPage; st.put(rec); loadSavedPdfs(); }
+        };
+      } catch(e) {}
+    }
+  }
+  function prevPdfPage() { if (currentPdfDoc && currentPdfPage > 1) renderPdfPage(currentPdfPage - 1); }
+  function nextPdfPage() { if (currentPdfDoc && currentPdfPage < currentPdfDoc.numPages) renderPdfPage(currentPdfPage + 1); }
+  function closePdfViewer() { document.getElementById('pdfViewerCard').style.display = 'none'; currentPdfDoc = null; }
+
+  // --- Notes & Flashcards ---
+  var notes = JSON.parse(safeGet('studyNotes', '[]'));
+  function addNote() {
+    var title = document.getElementById('noteTitle').value.trim(), body = document.getElementById('noteBody').value.trim();
+    if (!title && !body) return;
+    notes.unshift({ id: Date.now(), title: title || 'শিরোনামহীন', body: body });
+    safeSet('studyNotes', JSON.stringify(notes));
+    document.getElementById('noteTitle').value = ''; document.getElementById('noteBody').value = ''; renderNotes();
+  }
+  function deleteNote(id) { notes = notes.filter(function(n) { return n.id !== id; }); safeSet('studyNotes', JSON.stringify(notes)); renderNotes(); }
+  function renderNotes() {
+    var box = document.getElementById('notesList');
+    if (!notes.length) { box.innerHTML = '<small style="color:var(--muted);">কোনো নোট নেই।</small>'; return; }
+    box.innerHTML = notes.map(function(n) {
+      return '<div style="border-top:1px solid var(--border); padding:10px 0;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center;"><strong>' + escapeHtml(n.title) + '</strong>' +
+        '<button class="btn btn-sm btn-danger" onclick="deleteNote(' + n.id + ')">✕</button></div>' +
+        '<p style="font-size:14px; margin-top:4px; white-space:pre-wrap;">' + escapeHtml(n.body) + '</p></div>';
+    }).join('');
+  }
+  renderNotes();
+
+  var cards = JSON.parse(safeGet('studyCards', '[]'));
+  function addFlashcard() {
+    var front = document.getElementById('fcFront').value.trim(), back = document.getElementById('fcBack').value.trim();
+    if (!front || !back) return alert('সামনে ও পিছনের লেখা দিন');
+    cards.unshift({ id: Date.now(), front: front, back: back });
+    safeSet('studyCards', JSON.stringify(cards));
+    document.getElementById('fcFront').value = ''; document.getElementById('fcBack').value = ''; renderCards();
+  }
+  function deleteCard(e, id) { e.stopPropagation(); cards = cards.filter(function(c) { return c.id !== id; }); safeSet('studyCards', JSON.stringify(cards)); renderCards(); }
+  function toggleCard(el, id) {
+    var c = cards.find(function(x) { return x.id === id; }); if (!c) return;
+    var isBack = el.dataset.side === 'back';
+    el.dataset.side = isBack ? 'front' : 'back';
+    el.querySelector('.fc-text').textContent = isBack ? c.front : c.back;
+    el.querySelector('small').textContent = isBack ? 'উত্তর দেখতে চাপ দিন' : 'প্রশ্ন দেখতে চাপ দিন (উত্তর)';
+  }
+  function renderCards() {
+    var box = document.getElementById('flashcardList');
+    if (!cards.length) { box.innerHTML = '<small style="color:var(--muted);">কোনো ফ্ল্যাশকার্ড নেই।</small>'; return; }
+    box.innerHTML = cards.map(function(c) {
+      return '<div class="flashcard" data-side="front" onclick="toggleCard(this, ' + c.id + ')">' +
+        '<button class="btn btn-sm btn-danger" style="position:absolute;top:8px;right:8px;" onclick="deleteCard(event, ' + c.id + ')">✕</button>' +
+        '<div class="fc-text" style="font-size:16px; font-weight:700;">' + escapeHtml(c.front) + '</div>' +
+        '<small>উত্তর দেখতে চাপ দিন</small></div>';
+    }).join('');
+  }
+  renderCards();
+</script>
+</body>
+</html>
